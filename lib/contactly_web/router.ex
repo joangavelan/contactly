@@ -14,6 +14,8 @@ defmodule ContactlyWeb.Router do
     pipe_through :browser
 
     get "/", HomeController, :index
+
     get "/contacts", ContactsController, :index
+    get "/contacts/new", ContactsController, :new
   end
 end

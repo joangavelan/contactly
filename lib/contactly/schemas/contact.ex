@@ -15,5 +15,6 @@ defmodule Contactly.Contact do
     contact
     |> cast(attrs, [:name, :email, :phone])
     |> validate_required([:name, :email, :phone])
+    |> validate_format(:email, ~r/@/, message: "must be a valid email")
   end
 end
