@@ -45,4 +45,15 @@ defmodule ContactlyWeb.Pages.Contacts.Components do
     </form>
     """
   end
+
+  def contact_list(assigns) do
+    ~H"""
+    <h2>Contact List</h2>
+    <ul>
+      <%= for contact <- @contacts do %>
+        <li>{contact.name} - {contact.email} - {contact.phone}</li>
+      <% end %>
+    </ul>
+    """
+  end
 end

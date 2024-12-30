@@ -6,8 +6,9 @@ defmodule ContactlyWeb.Pages.Contacts do
   import ContactlyWeb.Pages.Contacts.Components
 
   def mount(_params, _session, socket) do
+    contacts = Contacts.list_contacts()
     changeset = Contact.changeset(%Contact{}, %{}) |> Map.put(:action, :initial_form)
-    {:ok, assign(socket, changeset: changeset)}
+    {:ok, assign(socket, changeset: changeset, contacts: contacts)}
   end
 
   def handle_event("save", %{"contact_form" => contact_form_data}, socket) do
@@ -27,6 +28,8 @@ defmodule ContactlyWeb.Pages.Contacts do
     <h1>Contacts</h1>
 
     <.contact_form changeset={@changeset} />
+
+    <.contact_list contacts={@contacts} />
     """
   end
 end
