@@ -1,4 +1,5 @@
 defmodule ContactlyWeb.Pages.Contacts do
+  alias Contactly.Contacts
   alias Contactly.Contact
   use Phoenix.LiveView
   require Logger
@@ -10,16 +11,14 @@ defmodule ContactlyWeb.Pages.Contacts do
   end
 
   def handle_event("save", %{"contact_form" => contact_form_data}, socket) do
-    changeset = Contact.changeset(%Contact{}, contact_form_data) |> Map.put(:action, :insert)
+    case Contacts.create_contact(contact_form_data) do
+      {:ok, created_contact} ->
+        Logger.info("Contact #{created_contact.email} saved to the database")
 
-    if changeset.valid? do
-      # Save contact to the database
-      Logger.info("Saving contact to the database...")
+        {:noreply, assign(socket, changeset: Contact.changeset(%Contact{}, %{}))}
 
-      {:noreply, assign(socket, changeset: Contact.changeset(%Contact{}, %{}))}
-    else
-      # Return errors to the form
-      {:noreply, assign(socket, changeset: changeset)}
+      {:error, changeset} ->
+        {:noreply, assign(socket, changeset: Map.put(changeset, :action, :insert))}
     end
   end
 
