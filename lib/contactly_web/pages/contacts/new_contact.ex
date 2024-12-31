@@ -15,6 +15,7 @@ defmodule ContactlyWeb.Pages.Contacts.NewContact do
       {:ok, _created_contact} ->
         socket =
           socket
+          |> put_flash(:info, "Contact created successfully!")
           |> push_navigate(to: "/contacts")
 
         {:noreply, socket}
