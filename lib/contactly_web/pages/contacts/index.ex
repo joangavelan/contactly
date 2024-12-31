@@ -1,35 +1,27 @@
 defmodule ContactlyWeb.Pages.Contacts do
-  alias Contactly.Contacts
-  alias Contactly.Contact
-  use Phoenix.LiveView
   require Logger
-  import ContactlyWeb.Pages.Contacts.Components
+  use ContactlyWeb, :live_view
+  alias Contactly.Contacts
 
   def mount(_params, _session, socket) do
     contacts = Contacts.list_contacts()
-    changeset = Contact.changeset(%Contact{}, %{}) |> Map.put(:action, :initial_form)
-    {:ok, assign(socket, changeset: changeset, contacts: contacts)}
-  end
-
-  def handle_event("save", %{"contact_form" => contact_form_data}, socket) do
-    case Contacts.create_contact(contact_form_data) do
-      {:ok, created_contact} ->
-        Logger.info("Contact #{created_contact.email} saved to the database")
-
-        {:noreply, assign(socket, changeset: Contact.changeset(%Contact{}, %{}))}
-
-      {:error, changeset} ->
-        {:noreply, assign(socket, changeset: Map.put(changeset, :action, :insert))}
-    end
+    {:ok, assign(socket, contacts: contacts)}
   end
 
   def render(assigns) do
     ~H"""
     <h1>Contacts</h1>
 
-    <.contact_form changeset={@changeset} />
+    <.link navigate={~p"/contacts/new"}>
+      <button>New contact</button>
+    </.link>
 
-    <.contact_list contacts={@contacts} />
+    <h2>List</h2>
+    <ul>
+      <%= for contact <- @contacts do %>
+        <li>{contact.name} - {contact.email} - {contact.phone}</li>
+      <% end %>
+    </ul>
     """
   end
 end

@@ -16,5 +16,6 @@ defmodule ContactlyWeb.Router do
     get "/", HomeController, :index
 
     live "/contacts", Pages.Contacts
+    live "/contacts/new", Pages.Contacts.NewContact
   end
 end
