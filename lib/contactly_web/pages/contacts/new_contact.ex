@@ -10,8 +10,8 @@ defmodule ContactlyWeb.Pages.Contacts.NewContact do
     {:ok, assign(socket, changeset: changeset)}
   end
 
-  def handle_event("save", %{"contact_form" => contact_form_data}, socket) do
-    case Contacts.create_contact(contact_form_data) do
+  def handle_event("save_contact", %{"contact" => contact_params}, socket) do
+    case Contacts.create_contact(contact_params) do
       {:ok, _created_contact} ->
         socket =
           socket
@@ -27,11 +27,9 @@ defmodule ContactlyWeb.Pages.Contacts.NewContact do
 
   def render(assigns) do
     ~H"""
-    <.contact_form changeset={@changeset} />
+    <.contact_form changeset={@changeset} on_submit="save_contact" submit_btn_text="Save Contact" />
 
-    <.link navigate={~p"/contacts"}>
-      <button style="margin-top: 20px;">Go Back</button>
-    </.link>
+    <.link navigate="/contacts"><button style="margin-top: 20px;">Go Back</button></.link>
     """
   end
 end

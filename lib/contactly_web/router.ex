@@ -17,5 +17,6 @@ defmodule ContactlyWeb.Router do
 
     live "/contacts", Pages.Contacts
     live "/contacts/new", Pages.Contacts.NewContact
+    live "/contacts/:id/edit", Pages.Contacts.EditContact
   end
 end

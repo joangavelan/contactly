@@ -3,16 +3,20 @@ defmodule ContactlyWeb.Pages.Contacts.Components do
 
   def contact_form(assigns) do
     ~H"""
-    <form phx-submit="save">
+    <form phx-submit={@on_submit}>
+      <%= if @changeset.data.id do %>
+        <input type="hidden" name="contact[id]" value={@changeset.data.id} />
+      <% end %>
+
       <div>
         <label>Name:</label>
         <input
           id="name"
           type="text"
-          name="contact_form[name]"
-          value={@changeset.changes[:name] || ""}
+          name="contact[name]"
+          value={@changeset.changes[:name] || @changeset.data.name || ""}
         />
-        <%= if @changeset.action == :insert && @changeset.errors[:name] do %>
+        <%= if @changeset.action && @changeset.errors[:name] do %>
           <span class="error-msg">{elem(@changeset.errors[:name], 0)}</span>
         <% end %>
       </div>
@@ -20,11 +24,11 @@ defmodule ContactlyWeb.Pages.Contacts.Components do
         <label>Email:</label>
         <input
           id="email"
-          type="email"
-          name="contact_form[email]"
-          value={@changeset.changes[:email] || ""}
+          type="text"
+          name="contact[email]"
+          value={@changeset.changes[:email] || @changeset.data.email || ""}
         />
-        <%= if @changeset.action == :insert && @changeset.errors[:email] do %>
+        <%= if @changeset.action && @changeset.errors[:email] do %>
           <span class="error-msg">{elem(@changeset.errors[:email], 0)}</span>
         <% end %>
       </div>
@@ -33,15 +37,15 @@ defmodule ContactlyWeb.Pages.Contacts.Components do
         <input
           id="phone"
           type="text"
-          name="contact_form[phone]"
-          value={@changeset.changes[:phone] || ""}
+          name="contact[phone]"
+          value={@changeset.changes[:phone] || @changeset.data.phone || ""}
         />
-        <%= if @changeset.action == :insert && @changeset.errors[:phone] do %>
+        <%= if @changeset.action && @changeset.errors[:phone] do %>
           <span class="error-msg">{elem(@changeset.errors[:phone], 0)}</span>
         <% end %>
       </div>
 
-      <button type="submit">Save contact</button>
+      <button type="submit">{@submit_btn_text}</button>
     </form>
     """
   end

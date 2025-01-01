@@ -31,7 +31,13 @@ defmodule ContactlyWeb.Pages.Contacts do
     <h2>List</h2>
     <ul>
       <%= for contact <- @contacts do %>
-        <li>{contact.name} - {contact.email} - {contact.phone}</li>
+        <li>
+          <p>{contact.name} - {contact.email} - {contact.phone}</p>
+
+          <div>
+            <.link navigate={~p"/contacts/#{contact.id}/edit"}><button>Edit</button></.link>
+          </div>
+        </li>
       <% end %>
     </ul>
     """
