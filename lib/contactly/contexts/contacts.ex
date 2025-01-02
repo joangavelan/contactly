@@ -24,4 +24,8 @@ defmodule Contactly.Contacts do
     |> Contact.changeset(attrs)
     |> Repo.update()
   end
+
+  def delete_contact(%Contact{} = contact) do
+    Repo.delete(contact)
+  end
 end
