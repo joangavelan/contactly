@@ -29,29 +29,6 @@ defmodule ContactlyWeb.Pages.Contacts do
 
   def render(assigns) do
     ~H"""
-    <%!-- feedback message (flash) --%>
-    <%= if msg = Phoenix.Flash.get(@flash, :info) do %>
-      <div id="flash-info">
-        Info: {msg}
-        <button phx-click={
-          JS.push("lv:clear-flash", value: %{key: :info}) |> JS.hide(to: "#flash-info")
-        }>
-          x
-        </button>
-      </div>
-    <% end %>
-
-    <%= if msg = Phoenix.Flash.get(@flash, :error) do %>
-      <div id="flash-error">
-        Error: {msg}
-        <button phx-click={
-          JS.push("lv:clear-flash", value: %{key: :error}) |> JS.hide(to: "#flash-error")
-        }>
-          x
-        </button>
-      </div>
-    <% end %>
-
     <h1>Contacts</h1>
 
     <.link navigate={~p"/contacts/new"}>
