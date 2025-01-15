@@ -31,7 +31,7 @@ defmodule ContactlyWeb.Pages.Contacts do
     ~H"""
     <h1>Contacts</h1>
 
-    <.link navigate={~p"/contacts/new"}>
+    <.link navigate="/contacts/new">
       <button>New contact</button>
     </.link>
 
@@ -42,7 +42,7 @@ defmodule ContactlyWeb.Pages.Contacts do
           <p>{contact.name} - {contact.email} - {contact.phone}</p>
 
           <div>
-            <.link navigate={~p"/contacts/#{contact.id}/edit"}><button>Edit</button></.link>
+            <.link navigate={"/contacts/#{contact.id}/edit"}><button>Edit</button></.link>
             <button
               id={"delete-contact-#{contact.id}-btn"}
               data-contact-id={contact.id}
