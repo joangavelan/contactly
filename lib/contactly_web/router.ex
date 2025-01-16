@@ -10,13 +10,30 @@ defmodule ContactlyWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :is_authenticated do
+    plug ContactlyWeb.Plugs.RequireAuth
+    plug ContactlyWeb.Plugs.FetchUser
+  end
+
   scope "/", ContactlyWeb do
     pipe_through :browser
 
     get "/", HomeController, :index
 
-    live "/contacts", Pages.Contacts
-    live "/contacts/new", Pages.Contacts.NewContact
-    live "/contacts/:id/edit", Pages.Contacts.EditContact
+    get "/login", AuthController, :login_page
+    post "/logout", AuthController, :logout
+  end
+
+  scope "/", ContactlyWeb do
+    pipe_through [:browser, :is_authenticated]
+
+    get "/portal", PortalController, :index
+  end
+
+  scope "/auth", ContactlyWeb do
+    pipe_through :browser
+
+    get "/:provider", AuthProviderController, :request
+    get "/:provider/callback", AuthProviderController, :callback
   end
 end

@@ -1,0 +1,21 @@
+<div>
+  <p>Hello {@current_user.email}!</p>
+  <img src={@current_user.picture} alt="user picture" />
+  <form action="/logout" method="post">
+    <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
+    <button>Logout</button>
+  </form>
+</div>
+
+<h1>Welcome to the Application Portal!</h1>
+
+<p>Choose how you'd like to explore the app:</p>
+<div>
+  <a href="/mvc/contacts">
+    <button>MVC Version</button>
+  </a>
+
+  <a href="/live/contacts">
+    <button>LiveView Version</button>
+  </a>
+</div>
