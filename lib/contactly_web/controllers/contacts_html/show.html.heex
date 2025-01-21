@@ -1,0 +1,20 @@
+<a href="/mvc/contacts">
+  <button>Back</button>
+</a>
+
+<h1>Contact Details</h1>
+
+<div>
+  <p>Email: {@contact.email}</p>
+  <p>Phone: {@contact.phone}</p>
+</div>
+
+<div>
+  <a href={"/mvc/contacts/#{@contact.id}/edit"}><button>Edit</button></a>
+
+  <button class="btn-open-delete-contact-confirmation-modal" data-contact-id={@contact.id}>
+    Delete
+  </button>
+</div>
+
+<.delete_contact_modal />

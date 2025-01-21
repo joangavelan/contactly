@@ -36,4 +36,20 @@ defmodule ContactlyWeb.Router do
     get "/:provider", AuthProviderController, :request
     get "/:provider/callback", AuthProviderController, :callback
   end
+
+  scope "/mvc", ContactlyWeb do
+    pipe_through [:browser, :is_authenticated]
+
+    # get "/contacts", ContactsController, :index
+    # get "/contacts/:id/edit", ContactsController, :edit
+    # get "/contacts/new", ContactsController, :new
+    # get "/contacts/:id, ContactsController, :show
+    # post "/contacts", ContactsController, :create
+    # patch "/contacts/:id", ContactsController, :update
+    # put "/contacts/:id", ContactsController, :update
+    # delete "/contacts/:id", ContactsController, :delete
+
+    # Generates all of the routes listed above
+    resources "/contacts", ContactsController
+  end
 end

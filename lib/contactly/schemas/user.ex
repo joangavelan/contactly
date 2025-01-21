@@ -6,6 +6,7 @@ defmodule Contactly.User do
   schema "users" do
     field :email, :string
     field :picture, :string
+    has_many :contacts, Contactly.Contact
   end
 
   @doc false

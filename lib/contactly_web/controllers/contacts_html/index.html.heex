@@ -1,0 +1,41 @@
+<div>
+  <div>
+    <p>Hello {@current_user.email}!</p>
+    <img src={@current_user.picture} alt="user picture" />
+  </div>
+
+  <form action="/logout" method="post">
+    <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
+    <button>Logout</button>
+  </form>
+</div>
+
+<h1>Contacts</h1>
+
+<a href="/mvc/contacts/new">
+  <button>New Contact</button>
+</a>
+
+<ul>
+  <%= for contact <- @contacts do %>
+    <li>
+      <p>{contact.name} - {contact.email} - {contact.phone}</p>
+
+      <div>
+        <a href={"/mvc/contacts/#{contact.id}"}>
+          <button>View</button>
+        </a>
+
+        <a href={"/mvc/contacts/#{contact.id}/edit"}>
+          <button>Edit</button>
+        </a>
+
+        <button class="btn-open-delete-contact-confirmation-modal" data-contact-id={contact.id}>
+          Delete
+        </button>
+      </div>
+    </li>
+  <% end %>
+</ul>
+
+<.delete_contact_modal />

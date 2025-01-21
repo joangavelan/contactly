@@ -1,0 +1,12 @@
+<a href="/mvc/contacts">
+  <button>Back</button>
+</a>
+
+<h1>Edit Contact</h1>
+
+<.contact_form
+  action={"/mvc/contacts/#{@changeset.data.id}"}
+  method="patch"
+  changeset={@changeset}
+  submit_btn_text="Update Contact"
+/>

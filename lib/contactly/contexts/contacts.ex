@@ -4,19 +4,20 @@ defmodule Contactly.Contacts do
   """
   alias Contactly.Repo
   alias Contactly.Contact
+  import Ecto.Query, only: [from: 2]
 
-  def list_contacts do
-    Repo.all(Contact)
+  def list_contacts(user_id) do
+    Repo.all(from c in Contact, where: c.user_id == ^user_id)
   end
 
-  def create_contact(attrs \\ %{}) do
+  def create_contact(user_id, attrs \\ %{}) do
     %Contact{}
-    |> Contact.changeset(attrs)
+    |> Contact.changeset(Map.put(attrs, "user_id", user_id))
     |> Repo.insert()
   end
 
-  def get_contact!(id) do
-    Repo.get!(Contact, id)
+  def get_contact!(user_id, contact_id) do
+    Repo.get_by!(Contact, user_id: user_id, id: contact_id)
   end
 
   def update_contact(%Contact{} = contact, attrs) do
