@@ -38,4 +38,14 @@ defmodule Contactly.Contacts do
     |> CSV.encode()
     |> Enum.join()
   end
+
+  def search_contacts(user_id, query) do
+    query =
+      from c in Contact,
+        where:
+          c.user_id == ^user_id and
+            (ilike(c.name, ^"%#{query}%") or ilike(c.email, ^"%#{query}%"))
+
+    Repo.all(query)
+  end
 end

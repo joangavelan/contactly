@@ -37,6 +37,21 @@
   <button>New Contact</button>
 </a>
 
+<div>
+  <h2>Search contacts</h2>
+
+  <div style="display: flex; gap: 6px;">
+    <form action="/mvc/contacts/search" method="get">
+      <input type="text" name="query" />
+      <button type="submit">Search</button>
+    </form>
+
+    <a href="/mvc/contacts">
+      <button>Reset</button>
+    </a>
+  </div>
+</div>
+
 <ul>
   <%= for contact <- @contacts do %>
     <li>

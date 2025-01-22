@@ -100,4 +100,10 @@ defmodule ContactlyWeb.ContactsController do
     |> put_flash(:info, "Contacts imported successfully!")
     |> redirect(to: "/mvc/contacts")
   end
+
+  def search(conn, %{"query" => query}) do
+    user_id = conn.assigns.current_user.id
+    contacts = Contacts.search_contacts(user_id, query)
+    render(conn, :index, contacts: contacts)
+  end
 end

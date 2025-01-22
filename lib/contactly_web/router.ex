@@ -43,6 +43,8 @@ defmodule ContactlyWeb.Router do
     post "/contacts/import", ContactsController, :import
     get "/contacts/export", ContactsController, :export
 
+    get "/contacts/search", ContactsController, :search
+
     # get "/contacts", ContactsController, :index
     # get "/contacts/:id/edit", ContactsController, :edit
     # get "/contacts/new", ContactsController, :new
