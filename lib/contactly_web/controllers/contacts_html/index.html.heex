@@ -10,7 +10,28 @@
   </form>
 </div>
 
-<h1>Contacts</h1>
+<div style="margin-bottom: 20px;">
+  <h1>Contacts</h1>
+
+  <div>
+    <div>
+      <h2>Import Contacts (CSV)</h2>
+
+      <form action="/mvc/contacts/import" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
+        <input type="file" name="file" required />
+        <button>Import</button>
+      </form>
+    </div>
+
+    <div>
+      <h2>Export Contacts</h2>
+      <a href="/mvc/contacts/export" download>
+        <button>Export</button>
+      </a>
+    </div>
+  </div>
+</div>
 
 <a href="/mvc/contacts/new">
   <button>New Contact</button>

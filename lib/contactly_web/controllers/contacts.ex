@@ -72,4 +72,32 @@ defmodule ContactlyWeb.ContactsController do
         |> redirect(to: "/mvc/contacts")
     end
   end
+
+  def export(conn, _params) do
+    csv =
+      conn.assigns.current_user.id
+      |> Contacts.list_contacts()
+      |> Contacts.generate_csv()
+
+    conn
+    |> put_resp_content_type("text/csv")
+    |> put_resp_header("content-disposition", "attachment; filename=contacts.csv")
+    |> send_resp(200, csv)
+  end
+
+  def import(conn, %{"file" => %Plug.Upload{path: path, content_type: "text/csv"}}) do
+    user_id = conn.assigns.current_user.id
+
+    path
+    |> File.stream!()
+    |> CSV.decode(headers: true)
+    |> Enum.each(fn
+      {:ok, contact} -> Contacts.create_contact(user_id, contact)
+      {:error, _reason} -> :skip
+    end)
+
+    conn
+    |> put_flash(:info, "Contacts imported successfully!")
+    |> redirect(to: "/mvc/contacts")
+  end
 end

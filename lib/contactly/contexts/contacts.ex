@@ -29,4 +29,13 @@ defmodule Contactly.Contacts do
   def delete_contact(%Contact{} = contact) do
     Repo.delete(contact)
   end
+
+  def generate_csv(contacts) do
+    headers = ["name", "email", "phone"]
+    rows = Enum.map(contacts, &[&1.name, &1.email, &1.phone])
+
+    [headers | rows]
+    |> CSV.encode()
+    |> Enum.join()
+  end
 end

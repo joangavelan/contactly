@@ -45,7 +45,8 @@ defmodule Contactly.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
       {:req, "~> 0.5.0"},
-      {:assent, "~> 0.3.0"}
+      {:assent, "~> 0.3.0"},
+      {:csv, "~> 3.2"}
     ]
   end
 

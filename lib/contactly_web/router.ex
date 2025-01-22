@@ -40,6 +40,9 @@ defmodule ContactlyWeb.Router do
   scope "/mvc", ContactlyWeb do
     pipe_through [:browser, :is_authenticated]
 
+    post "/contacts/import", ContactsController, :import
+    get "/contacts/export", ContactsController, :export
+
     # get "/contacts", ContactsController, :index
     # get "/contacts/:id/edit", ContactsController, :edit
     # get "/contacts/new", ContactsController, :new
