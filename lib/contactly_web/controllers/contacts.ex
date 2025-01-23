@@ -3,9 +3,22 @@ defmodule ContactlyWeb.ContactsController do
   alias Contactly.Contacts
   use ContactlyWeb, :controller
 
+  def index(conn, %{"page" => page}) do
+    user_id = conn.assigns.current_user.id
+
+    page_size = 5
+    page_number = String.to_integer(page)
+
+    total_contacts = Contacts.count_contacts(user_id)
+    contacts = Contacts.list_contacts(user_id, page_number)
+
+    total_pages = ceil(total_contacts / page_size)
+
+    render(conn, :index, contacts: contacts, total_pages: total_pages)
+  end
+
   def index(conn, _params) do
-    user_contacts = conn.assigns.current_user.id |> Contacts.list_contacts()
-    render(conn, :index, contacts: user_contacts)
+    index(conn, %{"page" => "1"})
   end
 
   def edit(conn, %{"id" => contact_id}) do
@@ -101,9 +114,20 @@ defmodule ContactlyWeb.ContactsController do
     |> redirect(to: "/mvc/contacts")
   end
 
-  def search(conn, %{"query" => query}) do
+  def search(conn, %{"query" => query, "page" => page}) do
     user_id = conn.assigns.current_user.id
-    contacts = Contacts.search_contacts(user_id, query)
-    render(conn, :index, contacts: contacts)
+    page_size = 5
+    page_number = String.to_integer(page)
+
+    total_contacts = Contacts.count_search_results(user_id, query)
+    total_pages = ceil(total_contacts / page_size)
+
+    contacts = Contacts.search_contacts_paginated(user_id, query, page_number, page_size)
+
+    render(conn, :index, contacts: contacts, total_pages: total_pages)
+  end
+
+  def search(conn, %{"query" => query}) do
+    search(conn, %{"query" => query, "page" => "1"})
   end
 end

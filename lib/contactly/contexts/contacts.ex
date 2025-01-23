@@ -4,10 +4,22 @@ defmodule Contactly.Contacts do
   """
   alias Contactly.Repo
   alias Contactly.Contact
-  import Ecto.Query, only: [from: 2]
+  import Ecto.Query
 
-  def list_contacts(user_id) do
-    Repo.all(from c in Contact, where: c.user_id == ^user_id)
+  def list_contacts(user_id, page \\ 1, page_size \\ 5) do
+    Contact
+    |> where(user_id: ^user_id)
+    |> order_by(:name)
+    |> limit(^page_size)
+    |> offset(^((page - 1) * page_size))
+    |> Repo.all()
+  end
+
+  def count_contacts(user_id) do
+    Contact
+    |> where(user_id: ^user_id)
+    |> select([c], count(c.id))
+    |> Repo.one()
   end
 
   def create_contact(user_id, attrs \\ %{}) do
@@ -39,13 +51,21 @@ defmodule Contactly.Contacts do
     |> Enum.join()
   end
 
-  def search_contacts(user_id, query) do
-    query =
-      from c in Contact,
-        where:
-          c.user_id == ^user_id and
-            (ilike(c.name, ^"%#{query}%") or ilike(c.email, ^"%#{query}%"))
+  def count_search_results(user_id, query) do
+    Contact
+    |> where(user_id: ^user_id)
+    |> where([c], ilike(c.name, ^"%#{query}%") or ilike(c.email, ^"%#{query}%"))
+    |> select([c], count(c.id))
+    |> Repo.one()
+  end
 
-    Repo.all(query)
+  def search_contacts_paginated(user_id, query, page \\ 1, page_size \\ 5) do
+    Contact
+    |> where(user_id: ^user_id)
+    |> where([c], ilike(c.name, ^"%#{query}%") or ilike(c.email, ^"%#{query}%"))
+    |> order_by(:name)
+    |> limit(^page_size)
+    |> offset(^((page - 1) * page_size))
+    |> Repo.all()
   end
 end

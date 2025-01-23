@@ -74,4 +74,16 @@
   <% end %>
 </ul>
 
+<%= if @total_pages && @total_pages > 1 do %>
+  <nav>
+    <%= for i <- 1..@total_pages do %>
+      <a href={"/mvc/contacts#{if @conn.query_params["query"], do: "/search?query=#{@conn.query_params["query"]}&", else: "?"}page=#{i}"}>
+        <button>
+          {i}
+        </button>
+      </a>
+    <% end %>
+  </nav>
+<% end %>
+
 <.delete_contact_modal />
