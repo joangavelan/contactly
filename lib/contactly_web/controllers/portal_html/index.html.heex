@@ -1,11 +1,4 @@
-<div>
-  <p>Hello {@current_user.email}!</p>
-  <img src={@current_user.picture} alt="user picture" />
-  <form action="/logout" method="post">
-    <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
-    <button>Logout</button>
-  </form>
-</div>
+<.welcome_user current_user={@current_user} />
 
 <h1>Welcome to the Application Portal!</h1>
 
