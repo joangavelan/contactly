@@ -6,7 +6,14 @@ defmodule Contactly.Contacts do
   alias Contactly.Contact
   import Ecto.Query
 
-  def list_contacts(user_id, page \\ 1, page_size \\ 5) do
+  def list_all_contacts(user_id) do
+    Contact
+    |> where(user_id: ^user_id)
+    |> order_by(:name)
+    |> Repo.all()
+  end
+
+  def list_contacts_paginated(user_id, page \\ 1, page_size \\ 5) do
     Contact
     |> where(user_id: ^user_id)
     |> order_by(:name)
@@ -15,7 +22,7 @@ defmodule Contactly.Contacts do
     |> Repo.all()
   end
 
-  def count_contacts(user_id) do
+  def count_user_contacts(user_id) do
     Contact
     |> where(user_id: ^user_id)
     |> select([c], count(c.id))

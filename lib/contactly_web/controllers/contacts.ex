@@ -9,8 +9,8 @@ defmodule ContactlyWeb.ContactsController do
     page_size = 5
     page_number = String.to_integer(page)
 
-    total_contacts = Contacts.count_contacts(user_id)
-    contacts = Contacts.list_contacts(user_id, page_number)
+    total_contacts = Contacts.count_user_contacts(user_id)
+    contacts = Contacts.list_contacts_paginated(user_id, page_number)
 
     total_pages = ceil(total_contacts / page_size)
 
@@ -87,15 +87,13 @@ defmodule ContactlyWeb.ContactsController do
   end
 
   def export(conn, _params) do
-    csv =
-      conn.assigns.current_user.id
-      |> Contacts.list_contacts()
-      |> Contacts.generate_csv()
+    user_id = conn.assigns.current_user.id
+    csv_data = Contacts.list_all_contacts(user_id) |> Contacts.generate_csv()
 
     conn
     |> put_resp_content_type("text/csv")
     |> put_resp_header("content-disposition", "attachment; filename=contacts.csv")
-    |> send_resp(200, csv)
+    |> send_resp(200, csv_data)
   end
 
   def import(conn, %{"file" => %Plug.Upload{path: path, content_type: "text/csv"}}) do
