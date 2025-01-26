@@ -3,22 +3,31 @@ defmodule ContactlyWeb.ContactsController do
   alias Contactly.Contacts
   use ContactlyWeb, :controller
 
-  def index(conn, %{"page" => page}) do
-    user_id = conn.assigns.current_user.id
+  @default_page_size 5
 
-    page_size = 5
-    page_number = String.to_integer(page)
-
-    total_contacts = Contacts.count_user_contacts(user_id)
-    contacts = Contacts.list_contacts_paginated(user_id, page_number)
-
-    total_pages = ceil(total_contacts / page_size)
-
-    render(conn, :index, contacts: contacts, total_pages: total_pages)
+  def index(conn, %{"search_query" => ""}) do
+    redirect(conn, to: "/mvc/contacts")
   end
 
-  def index(conn, _params) do
-    index(conn, %{"page" => "1"})
+  def index(conn, params) do
+    user_id = conn.assigns.current_user.id
+
+    page_number = Map.get(params, "page", "1") |> String.to_integer()
+    search_query = Map.get(params, "search_query", "")
+
+    opts = [search_query: search_query, page: page_number]
+
+    contacts = Contacts.list_contacts(user_id, opts)
+    total_contacts = Contacts.count_contacts(user_id, search_query)
+
+    total_pages = ceil(total_contacts / @default_page_size)
+
+    render(conn, :index,
+      contacts: contacts,
+      search_query: search_query,
+      current_page: page_number,
+      total_pages: total_pages
+    )
   end
 
   def edit(conn, %{"id" => contact_id}) do
@@ -110,22 +119,5 @@ defmodule ContactlyWeb.ContactsController do
     conn
     |> put_flash(:info, "Contacts imported successfully!")
     |> redirect(to: "/mvc/contacts")
-  end
-
-  def search(conn, %{"query" => query, "page" => page}) do
-    user_id = conn.assigns.current_user.id
-    page_size = 5
-    page_number = String.to_integer(page)
-
-    total_contacts = Contacts.count_search_results(user_id, query)
-    total_pages = ceil(total_contacts / page_size)
-
-    contacts = Contacts.search_contacts_paginated(user_id, query, page_number, page_size)
-
-    render(conn, :index, contacts: contacts, total_pages: total_pages)
-  end
-
-  def search(conn, %{"query" => query}) do
-    search(conn, %{"query" => query, "page" => "1"})
   end
 end

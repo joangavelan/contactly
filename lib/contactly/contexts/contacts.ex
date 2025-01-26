@@ -6,27 +6,46 @@ defmodule Contactly.Contacts do
   alias Contactly.Contact
   import Ecto.Query
 
+  @default_page_size 5
+
   def list_all_contacts(user_id) do
     Contact
     |> where(user_id: ^user_id)
-    |> order_by(:name)
     |> Repo.all()
   end
 
-  def list_contacts_paginated(user_id, page \\ 1, page_size \\ 5) do
+  def list_contacts(user_id, opts \\ []) do
+    page = Keyword.get(opts, :page, 1)
+    search_query = Keyword.get(opts, :search_query, "")
+
     Contact
     |> where(user_id: ^user_id)
-    |> order_by(:name)
-    |> limit(^page_size)
-    |> offset(^((page - 1) * page_size))
+    |> apply_search(search_query)
+    |> paginate(page, @default_page_size)
     |> Repo.all()
   end
 
-  def count_user_contacts(user_id) do
+  def count_contacts(user_id, search_query \\ "") do
     Contact
     |> where(user_id: ^user_id)
+    |> apply_search(search_query)
     |> select([c], count(c.id))
     |> Repo.one()
+  end
+
+  defp apply_search(query, ""), do: query
+
+  defp apply_search(query, search_query) do
+    search_term = "%#{search_query}%"
+
+    query
+    |> where([c], ilike(c.name, ^search_term) or ilike(c.email, ^search_term))
+  end
+
+  defp paginate(query, page, page_size) do
+    query
+    |> limit(^page_size)
+    |> offset(^(page_size * (page - 1)))
   end
 
   def create_contact(user_id, attrs \\ %{}) do
@@ -56,23 +75,5 @@ defmodule Contactly.Contacts do
     [headers | rows]
     |> CSV.encode()
     |> Enum.join()
-  end
-
-  def count_search_results(user_id, query) do
-    Contact
-    |> where(user_id: ^user_id)
-    |> where([c], ilike(c.name, ^"%#{query}%") or ilike(c.email, ^"%#{query}%"))
-    |> select([c], count(c.id))
-    |> Repo.one()
-  end
-
-  def search_contacts_paginated(user_id, query, page \\ 1, page_size \\ 5) do
-    Contact
-    |> where(user_id: ^user_id)
-    |> where([c], ilike(c.name, ^"%#{query}%") or ilike(c.email, ^"%#{query}%"))
-    |> order_by(:name)
-    |> limit(^page_size)
-    |> offset(^((page - 1) * page_size))
-    |> Repo.all()
   end
 end

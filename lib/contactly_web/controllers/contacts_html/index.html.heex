@@ -7,6 +7,10 @@
 <div style="margin-bottom: 20px;">
   <h1>Contacts</h1>
 
+  <a href="/mvc/contacts/new">
+    <button>New Contact</button>
+  </a>
+
   <div>
     <div>
       <h2>Import Contacts (CSV)</h2>
@@ -27,55 +31,49 @@
   </div>
 </div>
 
-<a href="/mvc/contacts/new">
-  <button>New Contact</button>
-</a>
-
 <div>
-  <h2>Search contacts</h2>
+  <h2>List</h2>
 
-  <div style="display: flex; gap: 6px;">
-    <form action="/mvc/contacts/search" method="get">
-      <input type="text" name="query" />
-      <button type="submit">Search</button>
-    </form>
+  <form action="/mvc/contacts" method="get">
+    <input type="text" name="search_query" value={@search_query} placeholder="Search contacts..." />
+    <button type="submit">Search</button>
+  </form>
 
-    <a href="/mvc/contacts">
-      <button>Reset</button>
-    </a>
-  </div>
+  <ul>
+    <%= for contact <- @contacts do %>
+      <li>
+        <p>{contact.name} - {contact.email} - {contact.phone}</p>
+
+        <div>
+          <a href={"/mvc/contacts/#{contact.id}"}>
+            <button>View</button>
+          </a>
+
+          <a href={"/mvc/contacts/#{contact.id}/edit"}>
+            <button>Edit</button>
+          </a>
+
+          <button class="btn-open-delete-contact-confirmation-modal" data-contact-id={contact.id}>
+            Delete
+          </button>
+        </div>
+      </li>
+    <% end %>
+  </ul>
 </div>
-
-<ul>
-  <%= for contact <- @contacts do %>
-    <li>
-      <p>{contact.name} - {contact.email} - {contact.phone}</p>
-
-      <div>
-        <a href={"/mvc/contacts/#{contact.id}"}>
-          <button>View</button>
-        </a>
-
-        <a href={"/mvc/contacts/#{contact.id}/edit"}>
-          <button>Edit</button>
-        </a>
-
-        <button class="btn-open-delete-contact-confirmation-modal" data-contact-id={contact.id}>
-          Delete
-        </button>
-      </div>
-    </li>
-  <% end %>
-</ul>
 
 <%= if @total_pages && @total_pages > 1 do %>
   <nav>
     <%= for i <- 1..@total_pages do %>
-      <a href={"/mvc/contacts#{if @conn.query_params["query"], do: "/search?query=#{@conn.query_params["query"]}&", else: "?"}page=#{i}"}>
-        <button>
-          {i}
-        </button>
-      </a>
+      <%= if @search_query != "" do %>
+        <a href={"/mvc/contacts?search_query=#{@search_query}&page=#{i}"}>
+          <button>{i}</button>
+        </a>
+      <% else %>
+        <a href={"/mvc/contacts?page=#{i}"}>
+          <button>{i}</button>
+        </a>
+      <% end %>
     <% end %>
   </nav>
 <% end %>
