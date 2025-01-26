@@ -55,4 +55,15 @@ defmodule ContactlyWeb.Router do
     # Generates all of the routes listed above
     resources "/contacts", ContactsController
   end
+
+  live_session :protected_liveviews, on_mount: ContactlyWeb.LiveHooks.RequireAuth do
+    scope "/live", ContactlyWeb do
+      pipe_through :browser
+
+      live "/contacts", Live.Contacts.Index
+      live "/contacts/:id/edit", Live.Contacts.Edit
+      live "/contacts/new", Live.Contacts.New
+      live "/contacts/:id", Live.Contacts.Show
+    end
+  end
 end

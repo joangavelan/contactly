@@ -1,4 +1,4 @@
-import OpenDeleteContactModalConfirmation from "../../lib/contactly_web/pages/contacts/open_delete_contact_modal_confirmation";
+import OpenDeleteContactModalConfirmation from "../../lib/contactly_web/live/contacts/open_delete_contact_modal_confirmation";
 
 let Hooks = {};
 

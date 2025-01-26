@@ -1,5 +1,11 @@
-defmodule ContactlyWeb.Pages.Contacts.Components do
+defmodule ContactlyWeb.Live.Components do
+  alias Phoenix.LiveView.JS
   use Phoenix.Component
+
+  attr :on_submit, :string, required: true
+  attr :changeset, :map, required: true
+  attr :submit_btn_text, :string, default: "Save Contact"
+  attr :submitting_btn_text, :string, default: "Saving..."
 
   def contact_form(assigns) do
     ~H"""
@@ -20,6 +26,7 @@ defmodule ContactlyWeb.Pages.Contacts.Components do
           <span class="error-msg">{elem(@changeset.errors[:name], 0)}</span>
         <% end %>
       </div>
+
       <div>
         <label>Email:</label>
         <input
@@ -32,6 +39,7 @@ defmodule ContactlyWeb.Pages.Contacts.Components do
           <span class="error-msg">{elem(@changeset.errors[:email], 0)}</span>
         <% end %>
       </div>
+
       <div>
         <label>Phone:</label>
         <input
@@ -45,8 +53,29 @@ defmodule ContactlyWeb.Pages.Contacts.Components do
         <% end %>
       </div>
 
-      <button type="submit">{@submit_btn_text}</button>
+      <button type="submit" phx-disable-with={@submitting_btn_text}>{@submit_btn_text}</button>
     </form>
+    """
+  end
+
+  def delete_contact_modal(assigns) do
+    ~H"""
+    <div class="modal hidden">
+      <div class="modal-content">
+        <p>Are you sure you want to delete this contact?</p>
+
+        <div class="modal-buttons">
+          <button phx-click={JS.add_class("hidden", to: ".modal")}>
+            Cancel
+          </button>
+
+          <form phx-submit="delete_contact">
+            <input type="hidden" name="contact_id" id="contact-id-hidden-input" />
+            <button id="delete-confirmation-btn" phx-disable-with="Deleting...">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
     """
   end
 end
